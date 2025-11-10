@@ -1,0 +1,104 @@
+.dashboard-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dashboard-title {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  mat-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+
+    .stat-icon {
+      font-size: 2rem;
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+
+  mat-card-content {
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: #666;
+    }
+  }
+
+  &.sorteos {
+    .stat-icon { color: #1976D2; }
+    .stat-number { color: #1976D2; }
+  }
+
+  &.clientes {
+    .stat-icon { color: #9C27B0; }
+    .stat-number { color: #9C27B0; }
+  }
+
+  &.billetes-disponibles {
+    .stat-icon { color: #4CAF50; }
+    .stat-number { color: #4CAF50; }
+  }
+
+  &.billetes-vendidos {
+    .stat-icon { color: #FF9800; }
+    .stat-number { color: #FF9800; }
+  }
+}
+
+.quick-actions {
+  margin-top: 2rem;
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+
+  .actions-grid {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+
+      mat-icon {
+        font-size: 1.5rem;
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+    }
+  }
+}

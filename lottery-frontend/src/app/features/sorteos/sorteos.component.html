@@ -1,0 +1,143 @@
+<div class="sorteos-container">
+  <div class="header">
+    <h1 class="page-title">📅 Gestión de Sorteos</h1>
+    <button mat-raised-button color="primary" (click)="toggleForm()">
+      <mat-icon>{{ showForm ? 'close' : 'add' }}</mat-icon>
+      {{ showForm ? 'Cancelar' : 'Crear Sorteo' }}
+    </button>
+  </div>
+
+  <!-- Formulario para crear sorteo -->
+  @if (showForm) {
+    <mat-card class="form-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>event</mat-icon>
+          Crear Nuevo Sorteo
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="sorteoForm" (ngSubmit)="onSubmit()">
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Nombre del Sorteo</mat-label>
+              <input matInput formControlName="nombre" placeholder="Ej: Lotería Nacional - Diciembre 2025">
+              <mat-icon matPrefix>title</mat-icon>
+              @if (sorteoForm.get('nombre')?.hasError('required') && sorteoForm.get('nombre')?.touched) {
+                <mat-error>El nombre es requerido</mat-error>
+              }
+              @if (sorteoForm.get('nombre')?.hasError('minlength')) {
+                <mat-error>El nombre debe tener al menos 3 caracteres</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Fecha del Sorteo</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="fecha">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              @if (sorteoForm.get('fecha')?.hasError('required') && sorteoForm.get('fecha')?.touched) {
+                <mat-error>La fecha es requerida</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="form-actions">
+            <button mat-raised-button color="primary" type="submit" [disabled]="submitting">
+              @if (submitting) {
+                <mat-spinner diameter="20"></mat-spinner>
+              } @else {
+                <ng-container>
+                  <mat-icon matButtonIcon>save</mat-icon>
+                  Guardar sorteo
+                </ng-container>
+              }
+            </button>
+            <button mat-button type="button" (click)="toggleForm()" [disabled]="submitting">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <!-- Tabla de sorteos -->
+  <mat-card>
+    <mat-card-content>
+      @if (loading) {
+        <div class="loading-container">
+          <mat-spinner></mat-spinner>
+        </div>
+      } @else if (sorteos.length === 0) {
+        <div class="empty-state">
+          <mat-icon class="empty-icon">event_busy</mat-icon>
+          <p>No hay sorteos registrados</p>
+          <button mat-raised-button color="primary" (click)="toggleForm()">
+            <mat-icon>add</mat-icon>
+            Crear Primer Sorteo
+          </button>
+        </div>
+      } @else {
+        <div class="table-container">
+          <table mat-table [dataSource]="sorteos" class="sorteos-table">
+            <!-- Nombre Column -->
+            <ng-container matColumnDef="nombre">
+              <th mat-header-cell *matHeaderCellDef>Sorteo</th>
+              <td mat-cell *matCellDef="let sorteo">
+                <strong>{{ sorteo.nombre }}</strong>
+              </td>
+            </ng-container>
+
+            <!-- Fecha Column -->
+            <ng-container matColumnDef="fecha">
+              <th mat-header-cell *matHeaderCellDef>Fecha</th>
+              <td mat-cell *matCellDef="let sorteo">
+                {{ sorteo.fecha | date:'dd/MM/yyyy' }}
+              </td>
+            </ng-container>
+
+            <!-- Total Billetes Column -->
+            <ng-container matColumnDef="totalBilletes">
+              <th mat-header-cell *matHeaderCellDef>Total Billetes</th>
+              <td mat-cell *matCellDef="let sorteo">
+                {{ sorteo.totalBilletes }}
+              </td>
+            </ng-container>
+
+            <!-- Disponibles Column -->
+            <ng-container matColumnDef="billetesDisponibles">
+              <th mat-header-cell *matHeaderCellDef>Disponibles</th>
+              <td mat-cell *matCellDef="let sorteo" class="disponibles">
+                {{ sorteo.billetesDisponibles }}
+              </td>
+            </ng-container>
+
+            <!-- Vendidos Column -->
+            <ng-container matColumnDef="billetesVendidos">
+              <th mat-header-cell *matHeaderCellDef>Vendidos</th>
+              <td mat-cell *matCellDef="let sorteo" class="vendidos">
+                {{ sorteo.billetesVendidos }}
+              </td>
+            </ng-container>
+
+            <!-- Estado Column -->
+            <ng-container matColumnDef="estado">
+              <th mat-header-cell *matHeaderCellDef>Estado</th>
+              <td mat-cell *matCellDef="let sorteo">
+                <mat-chip [class]="'estado-' + getEstadoSorteo(sorteo)">
+                  {{ getEstadoLabel(getEstadoSorteo(sorteo)) }}
+                </mat-chip>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

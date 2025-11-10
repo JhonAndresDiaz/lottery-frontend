@@ -1,0 +1,219 @@
+<div class="billetes-container">
+  <h1 class="page-title">🎰 Gestión de Billetes</h1>
+
+  <mat-tab-group>
+    <!-- Tab 1: Venta de Billetes -->
+    <mat-tab label="Vender Billete">
+      <div class="tab-content">
+        <!-- Paso 1: Seleccionar Sorteo -->
+        <mat-card class="step-card">
+          <mat-card-header>
+            <mat-icon class="step-icon">event</mat-icon>
+            <mat-card-title>Paso 1: Seleccione un Sorteo</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Sorteo</mat-label>
+              <mat-select [(ngModel)]="sorteoSeleccionado" (selectionChange)="onSorteoChange()">
+                @for (sorteo of sorteos; track sorteo.id) {
+                  <mat-option [value]="sorteo.id">
+                    {{ sorteo.nombre }} - {{ sorteo.fecha }} 
+                    ({{ sorteo.billetesDisponibles }} disponibles)
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Paso 2: Seleccionar Billete -->
+        @if (sorteoSeleccionado) {
+          <mat-card class="step-card">
+            <mat-card-header>
+              <mat-icon class="step-icon">confirmation_number</mat-icon>
+              <mat-card-title>Paso 2: Seleccione un Billete</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              @if (loading) {
+                <div class="loading-container">
+                  <mat-spinner diameter="40"></mat-spinner>
+                </div>
+              } @else if (billetesDisponibles.length === 0) {
+                <div class="empty-state">
+                  <mat-icon class="empty-icon">info</mat-icon>
+                  <p>No hay billetes disponibles para este sorteo</p>
+                </div>
+              } @else {
+                <div class="billetes-grid">
+                  @for (billete of billetesDisponibles; track billete.id) {
+                    <div 
+                      class="billete-card"
+                      [class.selected]="billeteSeleccionado?.id === billete.id"
+                      (click)="seleccionarBillete(billete)">
+                      <div class="billete-numero">#{{ billete.numero }}</div>
+                      <div class="billete-precio">${{ billete.precio | number:'1.0-0' }}</div>
+                      <mat-icon class="check-icon">check_circle</mat-icon>
+                    </div>
+                  }
+                </div>
+              }
+            </mat-card-content>
+          </mat-card>
+        }
+
+        <!-- Paso 3: Seleccionar Cliente -->
+        @if (billeteSeleccionado) {
+          <mat-card class="step-card">
+            <mat-card-header>
+              <mat-icon class="step-icon">person</mat-icon>
+              <mat-card-title>Paso 3: Seleccione un Cliente</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Cliente</mat-label>
+                <mat-select [(ngModel)]="clienteSeleccionado">
+                  @for (cliente of clientes; track cliente.id) {
+                    <mat-option [value]="cliente.id">
+                      {{ cliente.nombre }} - {{ cliente.email }}
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </mat-card-content>
+          </mat-card>
+        }
+
+        <!-- Resumen y Confirmación -->
+        @if (billeteSeleccionado && clienteSeleccionado) {
+          <mat-card class="confirmation-card">
+            <mat-card-header>
+              <mat-icon class="step-icon">shopping_cart</mat-icon>
+              <mat-card-title>Confirmar Venta</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="resumen">
+                <div class="resumen-item">
+                  <span class="label">Sorteo:</span>
+                  <span class="value">{{ billeteSeleccionado.sorteoNombre }}</span>
+                </div>
+                <div class="resumen-item">
+                  <span class="label">Billete:</span>
+                  <span class="value">#{{ billeteSeleccionado.numero }}</span>
+                </div>
+                <div class="resumen-item">
+                  <span class="label">Cliente:</span>
+                  <span class="value">
+                    {{ nombreClienteSeleccionado }}
+                  </span>
+                </div>
+                <div class="resumen-item total">
+                  <span class="label">Total a pagar:</span>
+                  <span class="value">${{ billeteSeleccionado.precio | number:'1.0-0' }}</span>
+                </div>
+              </div>
+            </mat-card-content>
+            <mat-card-actions>
+              <button 
+                mat-raised-button 
+                color="primary" 
+                (click)="confirmarVenta()"
+                [disabled]="loading">
+                @if (loading) {
+                  <mat-spinner diameter="20"></mat-spinner>
+                } @else {
+                  <ng-container>
+                    <mat-icon matButtonIcon>save</mat-icon>
+                    Confirmar venta
+                  </ng-container>
+                }
+              </button>
+              <button 
+                mat-button 
+                (click)="cancelarVenta()"
+                [disabled]="loading">
+                Cancelar
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        }
+      </div>
+    </mat-tab>
+
+    <!-- Tab 2: Crear Billete -->
+    <mat-tab label="Crear Billete">
+      <div class="tab-content">
+        <mat-card class="form-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>add_circle</mat-icon>
+              Crear Nuevo Billete
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="billeteForm" (ngSubmit)="onSubmitCrear()">
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Sorteo</mat-label>
+                  <mat-select formControlName="sorteoId">
+                    @for (sorteo of sorteos; track sorteo.id) {
+                      <mat-option [value]="sorteo.id">
+                        {{ sorteo.nombre }} - {{ sorteo.fecha }}
+                      </mat-option>
+                    }
+                  </mat-select>
+                  @if (billeteForm.get('sorteoId')?.hasError('required') && billeteForm.get('sorteoId')?.touched) {
+                    <mat-error>El sorteo es requerido</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Número del Billete (4 dígitos)</mat-label>
+                  <input matInput formControlName="numero" placeholder="Ej: 0001" maxlength="4">
+                  <mat-icon matPrefix>confirmation_number</mat-icon>
+                  @if (billeteForm.get('numero')?.hasError('required') && billeteForm.get('numero')?.touched) {
+                    <mat-error>El número es requerido</mat-error>
+                  }
+                  @if (billeteForm.get('numero')?.hasError('pattern')) {
+                    <mat-error>Debe ser un número de 4 dígitos</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Precio</mat-label>
+                  <input matInput type="number" formControlName="precio" placeholder="Ej: 10000">
+                  <mat-icon matPrefix>attach_money</mat-icon>
+                  @if (billeteForm.get('precio')?.hasError('required') && billeteForm.get('precio')?.touched) {
+                    <mat-error>El precio es requerido</mat-error>
+                  }
+                  @if (billeteForm.get('precio')?.hasError('min')) {
+                    <mat-error>El precio debe ser mayor a 0</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="form-actions">
+                <button mat-raised-button color="primary" type="submit" [disabled]="submitting">
+                  @if (submitting) {
+                    <mat-spinner diameter="20"></mat-spinner>
+                  } @else {
+                    <ng-container>
+                      <mat-icon>save</mat-icon>
+                      <span>Guardar</span>
+                    </ng-container>
+                  }
+                </button>
+                <button mat-button type="button" (click)="billeteForm.reset()" [disabled]="submitting">
+                  Limpiar
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
