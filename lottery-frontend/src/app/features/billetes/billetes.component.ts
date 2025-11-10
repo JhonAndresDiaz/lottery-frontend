@@ -174,32 +174,44 @@ export class BilletesComponent implements OnInit {
   }
 
   onSubmitCrear(): void {
-    if (this.billeteForm.invalid) {
-      this.toastr.warning('Por favor complete todos los campos correctamente', 'Formulario inválido');
-      return;
-    }
-
-    this.submitting = true;
-    const request = this.billeteForm.value;
-
-    this.billeteService.createBillete(request).subscribe({
-      next: (response) => {
-        this.toastr.success(`Billete #${response.numero} creado exitosamente`, '¡Éxito!');
-        this.toggleFormCrear();
-        this.submitting = false;
-        
-        // Si el sorteo seleccionado es el mismo, recargar billetes
-        if (this.sorteoSeleccionado === response.sorteoId) {
-          this.onSorteoChange();
-        }
-      },
-      error: (error) => {
-        const mensaje = error.error?.message || 'Error al crear el billete';
-        this.toastr.error(mensaje, 'Error');
-        this.submitting = false;
-      }
-    });
+  if (this.billeteForm.invalid) {
+    this.toastr.warning('Por favor complete todos los campos correctamente', 'Formulario inválido');
+    return;
   }
+
+  this.submitting = true;
+  const request = this.billeteForm.value;
+
+  this.billeteService.createBillete(request).subscribe({
+    next: (response) => {
+      this.toastr.success(`Billete #${response.numero} creado exitosamente`, '¡Éxito!');
+      this.toggleFormCrear();
+      this.submitting = false;
+      
+      this.recargarSorteos();
+      
+      if (this.sorteoSeleccionado === response.sorteoId) {
+        this.onSorteoChange();
+      }
+    },
+    error: (error) => {
+      const mensaje = error.error?.message || 'Error al crear el billete';
+      this.toastr.error(mensaje, 'Error');
+      this.submitting = false;
+    }
+  });
+}
+
+recargarSorteos(): void {
+  this.sorteoService.getSorteos().subscribe({
+    next: (sorteos) => {
+      this.sorteos = sorteos;
+    },
+    error: (error) => {
+      this.toastr.error('Error al recargar sorteos', 'Error');
+    }
+  });
+}
 
   get nombreClienteSeleccionado(): string {
     const c = this.clientes?.find(x => x.id === this.clienteSeleccionado);

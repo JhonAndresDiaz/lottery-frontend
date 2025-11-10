@@ -1,143 +1,208 @@
 <div class="sorteos-container">
   <div class="header">
-    <h1 class="page-title">📅 Gestión de Sorteos</h1>
-    <button mat-raised-button color="primary" (click)="toggleForm()">
-      <mat-icon>{{ showForm ? 'close' : 'add' }}</mat-icon>
+    <h1 class="page-title">
+      <svg class="title-icon" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+        <path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="12" cy="15" r="2" fill="currentColor"/>
+      </svg>
+      Gestión de Sorteos
+    </h1>
+    <button mat-raised-button class="add-button" (click)="toggleForm()">
+      <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
+        @if (showForm) {
+          <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        } @else {
+          <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        }
+      </svg>
       {{ showForm ? 'Cancelar' : 'Crear Sorteo' }}
     </button>
   </div>
 
-  <!-- Formulario para crear sorteo -->
   @if (showForm) {
-    <mat-card class="form-card">
-      <mat-card-header>
-        <mat-card-title>
-          <mat-icon>event</mat-icon>
+    <div class="form-card">
+      <div class="form-header">
+        <h2>
           Crear Nuevo Sorteo
-        </mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <form [formGroup]="sorteoForm" (ngSubmit)="onSubmit()">
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Nombre del Sorteo</mat-label>
-              <input matInput formControlName="nombre" placeholder="Ej: Lotería Nacional - Diciembre 2025">
-              <mat-icon matPrefix>title</mat-icon>
-              @if (sorteoForm.get('nombre')?.hasError('required') && sorteoForm.get('nombre')?.touched) {
-                <mat-error>El nombre es requerido</mat-error>
-              }
-              @if (sorteoForm.get('nombre')?.hasError('minlength')) {
-                <mat-error>El nombre debe tener al menos 3 caracteres</mat-error>
-              }
-            </mat-form-field>
-          </div>
-
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Fecha del Sorteo</mat-label>
-              <input matInput [matDatepicker]="picker" formControlName="fecha">
-              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
-              @if (sorteoForm.get('fecha')?.hasError('required') && sorteoForm.get('fecha')?.touched) {
-                <mat-error>La fecha es requerida</mat-error>
-              }
-            </mat-form-field>
-          </div>
-
-          <div class="form-actions">
-            <button mat-raised-button color="primary" type="submit" [disabled]="submitting">
-              @if (submitting) {
-                <mat-spinner diameter="20"></mat-spinner>
-              } @else {
-                <ng-container>
-                  <mat-icon matButtonIcon>save</mat-icon>
-                  Guardar sorteo
-                </ng-container>
-              }
-            </button>
-            <button mat-button type="button" (click)="toggleForm()" [disabled]="submitting">
-              Cancelar
-            </button>
-          </div>
-        </form>
-      </mat-card-content>
-    </mat-card>
-  }
-
-  <!-- Tabla de sorteos -->
-  <mat-card>
-    <mat-card-content>
-      @if (loading) {
-        <div class="loading-container">
-          <mat-spinner></mat-spinner>
+        </h2>
+      </div>
+      <form [formGroup]="sorteoForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nombre del Sorteo</mat-label>
+            <input matInput formControlName="nombre" placeholder="Ej: Lotería Nacional - Diciembre 2025">
+            <span matPrefix class="input-icon">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            @if (sorteoForm.get('nombre')?.hasError('required') && sorteoForm.get('nombre')?.touched) {
+              <mat-error>El nombre es requerido</mat-error>
+            }
+            @if (sorteoForm.get('nombre')?.hasError('minlength')) {
+              <mat-error>El nombre debe tener al menos 3 caracteres</mat-error>
+            }
+          </mat-form-field>
         </div>
-      } @else if (sorteos.length === 0) {
-        <div class="empty-state">
-          <mat-icon class="empty-icon">event_busy</mat-icon>
-          <p>No hay sorteos registrados</p>
-          <button mat-raised-button color="primary" (click)="toggleForm()">
-            <mat-icon>add</mat-icon>
-            Crear Primer Sorteo
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Fecha del Sorteo</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="fecha">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            @if (sorteoForm.get('fecha')?.hasError('required') && sorteoForm.get('fecha')?.touched) {
+              <mat-error>La fecha es requerida</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="form-actions">
+          <button mat-raised-button color="primary" type="submit" class="submit-btn" [disabled]="submitting">
+            @if (submitting) {
+              <mat-spinner diameter="20"></mat-spinner>
+            } @else {
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" stroke="currentColor" stroke-width="2"/>
+                <polyline points="17 21 17 13 7 13 7 21" stroke="currentColor" stroke-width="2"/>
+                <polyline points="7 3 7 8 15 8" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              Guardar sorteo
+            }
+          </button>
+          <button mat-button type="button" class="cancel-btn" (click)="toggleForm()" [disabled]="submitting">
+            Cancelar
           </button>
         </div>
-      } @else {
-        <div class="table-container">
-          <table mat-table [dataSource]="sorteos" class="sorteos-table">
-            <!-- Nombre Column -->
-            <ng-container matColumnDef="nombre">
-              <th mat-header-cell *matHeaderCellDef>Sorteo</th>
-              <td mat-cell *matCellDef="let sorteo">
+      </form>
+    </div>
+  }
+
+  <div class="table-card">
+    @if (loading) {
+      <div class="loading-container">
+        <mat-spinner></mat-spinner>
+      </div>
+    } @else if (sorteos.length === 0) {
+      <div class="empty-state">
+        <svg class="empty-icon" viewBox="0 0 24 24" fill="none">
+          <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+          <path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="1" y1="1" x2="23" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <p>No hay sorteos registrados</p>
+        <button mat-raised-button class="add-button" (click)="toggleForm()">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
+            <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Crear Primer Sorteo
+        </button>
+      </div>
+    } @else {
+      <div class="table-container">
+        <table mat-table [dataSource]="sorteos" class="sorteos-table">
+          <ng-container matColumnDef="nombre">
+            <th mat-header-cell *matHeaderCellDef>Sorteo</th>
+            <td mat-cell *matCellDef="let sorteo">
+              <div class="sorteo-info-cell">
+                <svg class="sorteo-icon" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                  <path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <circle cx="12" cy="15" r="2" fill="currentColor"/>
+                </svg>
                 <strong>{{ sorteo.nombre }}</strong>
-              </td>
-            </ng-container>
+              </div>
+            </td>
+          </ng-container>
 
-            <!-- Fecha Column -->
-            <ng-container matColumnDef="fecha">
-              <th mat-header-cell *matHeaderCellDef>Fecha</th>
-              <td mat-cell *matCellDef="let sorteo">
+          <ng-container matColumnDef="fecha">
+            <th mat-header-cell *matHeaderCellDef>Fecha</th>
+            <td mat-cell *matCellDef="let sorteo">
+              <div class="fecha-cell">
+                <svg class="fecha-icon" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"/>
+                </svg>
                 {{ sorteo.fecha | date:'dd/MM/yyyy' }}
-              </td>
-            </ng-container>
+              </div>
+            </td>
+          </ng-container>
 
-            <!-- Total Billetes Column -->
-            <ng-container matColumnDef="totalBilletes">
-              <th mat-header-cell *matHeaderCellDef>Total Billetes</th>
-              <td mat-cell *matCellDef="let sorteo">
+          <ng-container matColumnDef="totalBilletes">
+            <th mat-header-cell *matHeaderCellDef>Total Billetes</th>
+            <td mat-cell *matCellDef="let sorteo">
+              <div class="total-cell">
+                <svg class="total-icon" viewBox="0 0 24 24" fill="none">
+                  <rect x="2" y="8" width="20" height="10" rx="2" stroke="currentColor" stroke-width="2"/>
+                  <circle cx="7" cy="13" r="1.5" fill="currentColor"/>
+                  <circle cx="17" cy="13" r="1.5" fill="currentColor"/>
+                  <path d="M12 10v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
                 {{ sorteo.totalBilletes }}
-              </td>
-            </ng-container>
+              </div>
+            </td>
+          </ng-container>
 
-            <!-- Disponibles Column -->
-            <ng-container matColumnDef="billetesDisponibles">
-              <th mat-header-cell *matHeaderCellDef>Disponibles</th>
-              <td mat-cell *matCellDef="let sorteo" class="disponibles">
-                {{ sorteo.billetesDisponibles }}
-              </td>
-            </ng-container>
+          <ng-container matColumnDef="billetesDisponibles">
+            <th mat-header-cell *matHeaderCellDef>Disponibles</th>
+            <td mat-cell *matCellDef="let sorteo">
+              <div class="disponibles-cell">
+                <svg class="disponibles-icon" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                  <path d="M8 12l3 3l5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="disponibles-badge">{{ sorteo.billetesDisponibles }}</span>
+              </div>
+            </td>
+          </ng-container>
 
-            <!-- Vendidos Column -->
-            <ng-container matColumnDef="billetesVendidos">
-              <th mat-header-cell *matHeaderCellDef>Vendidos</th>
-              <td mat-cell *matCellDef="let sorteo" class="vendidos">
-                {{ sorteo.billetesVendidos }}
-              </td>
-            </ng-container>
+          <ng-container matColumnDef="billetesVendidos">
+            <th mat-header-cell *matHeaderCellDef>Vendidos</th>
+            <td mat-cell *matCellDef="let sorteo">
+              <div class="vendidos-cell">
+                <svg class="vendidos-icon" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="vendidos-badge">{{ sorteo.billetesVendidos }}</span>
+              </div>
+            </td>
+          </ng-container>
 
-            <!-- Estado Column -->
-            <ng-container matColumnDef="estado">
-              <th mat-header-cell *matHeaderCellDef>Estado</th>
-              <td mat-cell *matCellDef="let sorteo">
-                <mat-chip [class]="'estado-' + getEstadoSorteo(sorteo)">
+          <ng-container matColumnDef="estado">
+            <th mat-header-cell *matHeaderCellDef>Estado</th>
+            <td mat-cell *matCellDef="let sorteo">
+              <div class="estado-wrapper">
+                <span class="estado-badge" [class]="'estado-' + getEstadoSorteo(sorteo)">
+                  <svg class="estado-icon" viewBox="0 0 24 24" fill="none">
+                    @if (getEstadoSorteo(sorteo) === 'disponible') {
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                      <path d="M8 12l3 3l5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    } @else if (getEstadoSorteo(sorteo) === 'pocos') {
+                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2"/>
+                      <line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      <circle cx="12" cy="17" r="1" fill="currentColor"/>
+                    } @else {
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                      <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    }
+                  </svg>
                   {{ getEstadoLabel(getEstadoSorteo(sorteo)) }}
-                </mat-chip>
-              </td>
-            </ng-container>
+                </span>
+              </div>
+            </td>
+          </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          </table>
-        </div>
-      }
-    </mat-card-content>
-  </mat-card>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    }
+  </div>
 </div>
