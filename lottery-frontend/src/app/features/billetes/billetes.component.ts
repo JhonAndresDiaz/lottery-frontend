@@ -147,6 +147,7 @@ export class BilletesComponent implements OnInit {
         this.resetearSeleccion();
         this.onSorteoChange();
         this.loading = false;
+        this.recargarSorteos();
       },
       error: (error) => {
         const mensaje = error.error?.message || 'Error al realizar la venta';
