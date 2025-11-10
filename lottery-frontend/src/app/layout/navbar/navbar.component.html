@@ -1,24 +1,77 @@
-<mat-toolbar color="primary">
-  <span class="toolbar-title">🎰 Sistema de Lotería</span>
-  
-  <span class="spacer"></span>
-  
-  <nav class="nav-links">
-    <a mat-button routerLink="/dashboard" routerLinkActive="active">
-      <mat-icon>dashboard</mat-icon>
-      Dashboard
-    </a>
-    <a mat-button routerLink="/sorteos" routerLinkActive="active">
-      <mat-icon>event</mat-icon>
-      Sorteos
-    </a>
-    <a mat-button routerLink="/clientes" routerLinkActive="active">
-      <mat-icon>people</mat-icon>
-      Clientes
-    </a>
-    <a mat-button routerLink="/billetes" routerLinkActive="active">
-      <mat-icon>confirmation_number</mat-icon>
-      Billetes
-    </a>
-  </nav>
-</mat-toolbar>
+<nav class="lottery-navbar">
+  <div class="navbar-container">
+    <div class="nav-content">
+      <div class="nav-menu">
+        <a class="nav-item" routerLink="/dashboard" routerLinkActive="active">
+          <div class="nav-item-content">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+              <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+              <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+              <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span>Dashboard</span>
+          </div>
+          <div class="nav-item-indicator"></div>
+        </a>
+        
+        <a class="nav-item" routerLink="/sorteos" routerLinkActive="active">
+          <div class="nav-item-content">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+              <path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="12" cy="15" r="2" fill="currentColor"/>
+            </svg>
+            <span>Sorteos</span>
+          </div>
+          <div class="nav-item-indicator"></div>
+        </a>
+
+        <div class="logo-section">
+          <div class="logo-ring">
+            <div class="logo-icon">
+              <svg viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                <path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="logo-text">
+            <span class="logo-accent">LOTERÍA</span>
+            <span class="logo-sub"> Sistema de Ventas</span>
+          </div>
+        </div>
+        
+        <a class="nav-item" routerLink="/clientes" routerLinkActive="active">
+          <div class="nav-item-content">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
+              <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Clientes</span>
+          </div>
+          <div class="nav-item-indicator"></div>
+        </a>
+        
+        <a class="nav-item" routerLink="/billetes" routerLinkActive="active">
+          <div class="nav-item-content">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+              <rect x="2" y="6" width="20" height="12" rx="2" stroke="currentColor" stroke-width="2"/>
+              <circle cx="12" cy="12" r="2" stroke="currentColor" stroke-width="2"/>
+              <path d="M6 6v12M18 6v12" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span>Billetes</span>
+          </div>
+          <div class="nav-item-indicator"></div>
+        </a>
+      </div>
+    </div>
+
+    <button class="mobile-menu-btn">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</nav>
